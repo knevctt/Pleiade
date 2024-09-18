@@ -22,8 +22,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private Boolean accessLevel;
+    @NotNull//0 for user 1 for admin 2 for dev access
+    private int accessLevel;
 
     @NotBlank
     private String name;

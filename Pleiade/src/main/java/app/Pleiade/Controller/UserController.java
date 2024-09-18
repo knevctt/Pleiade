@@ -55,4 +55,24 @@ public class UserController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<User> findById(@PathVariable long id) {
+        try {
+            User user = this.userService.findById(id);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/findByName/{name}")
+    public ResponseEntity<User> findByNome(@PathVariable String name) {
+        try {
+            User user = userService.findByNome(name);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

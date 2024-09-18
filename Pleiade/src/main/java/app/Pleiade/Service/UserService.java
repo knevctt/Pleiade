@@ -34,4 +34,13 @@ public class UserService {
         List<User> list = this.userRepository.findAll();
         return list;
     }
+
+    public User findById(long id){
+        User user = this.userRepository.findById(id).get();
+        return user;
+    }
+
+    public User findByNome(String name) {
+        return userRepository.findByName(name);
+    }
 }
