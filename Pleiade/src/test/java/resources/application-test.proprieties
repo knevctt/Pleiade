@@ -1,0 +1,5 @@
+# Configuração H2 no Spring Boot
+spring.datasource.url=jdbc:h2:mem:pleiade
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=

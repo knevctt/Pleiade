@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -69,10 +70,15 @@ public class UserController {
     @GetMapping("/findByName/{name}")
     public ResponseEntity<User> findByNome(@PathVariable String name) {
         try {
-            User user = userService.findByNome(name);
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            Optional<User> user = userService.findByNome(name);
+            if (user.isPresent()) {
+                return new ResponseEntity<>(user.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -40,7 +41,7 @@ public class UserService {
         return user;
     }
 
-    public User findByNome(String name) {
+    public Optional<User> findByNome(String name) {
         return userRepository.findByName(name);
     }
 }

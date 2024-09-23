@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -90,10 +91,14 @@ class UserControllerTest {
 
     @Test
     void testFindUserByName() throws Exception {
-        when(userService.findByNome("John")).thenReturn(user);
+        User user = new User();
+        user.setName("John");
+
+        when(userService.findByNome("John")).thenReturn(Optional.of(user));
 
         mockMvc.perform(get("/api/user/findByName/John"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("John"));
     }
+
 }

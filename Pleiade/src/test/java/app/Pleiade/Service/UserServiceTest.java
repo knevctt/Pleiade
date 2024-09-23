@@ -76,8 +76,13 @@ class UserServiceTest {
 
     @Test
     void findUserByName() {
-        when(userRepository.findByName("John")).thenReturn(user);
-        User result = userService.findByNome("John");
-        assertEquals("John", result.getName());
+        User user = new User();
+        user.setName("John");
+
+        when(userRepository.findByName("John")).thenReturn(Optional.of(user));
+        Optional<User> result = userService.findByNome("John");
+
+        assertTrue(result.isPresent());
+        assertEquals("John", result.get().getName());
     }
 }
