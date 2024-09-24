@@ -12,18 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-    public class PdfData
-    {
+public class PdfData {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        private String name;
-        private String type;
+    private String name;
+    private String type;
 
-        @Lob
-        private byte[] pdfData;
-
-    }
+    @Lob
+    @Column(name = "pdf_data", columnDefinition="LONGBLOB")
+    private byte[] pdfData;
+}
 

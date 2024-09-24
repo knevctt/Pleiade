@@ -19,6 +19,8 @@ public class PdfStorageService {
             return "Invalid file type. Only PDF files are allowed.";
         }
 
+        System.out.println(file.getBytes() + "ok");
+
         // Salva os dados do PDF no repositório
         PdfData pdfData = repository.save(PdfData.builder()
                 .name(file.getOriginalFilename())
@@ -26,10 +28,7 @@ public class PdfStorageService {
                 .pdfData(file.getBytes()) // Não precisa de compressão para PDF
                 .build());
 
-        if (pdfData != null) {
-            return "PDF uploaded successfully: " + file.getOriginalFilename();
-        }
-        return null;
+        return "PDF uploaded successfully: " + file.getOriginalFilename();
     }
 
 }
