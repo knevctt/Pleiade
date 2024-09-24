@@ -1,0 +1,35 @@
+package app.Pleiade.Service;
+import app.Pleiade.Entity.PdfData;
+import app.Pleiade.Repository.PdfStorageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
+@Service
+public class PdfStorageService {
+
+    @Autowired
+    private PdfStorageRepository repository;
+
+    public String uploadPDF(MultipartFile file) throws IOException {
+        // Verifica se o arquivo é um PDF
+        if (!file.getContentType().equals("application/pdf")) {
+            return "Invalid file type. Only PDF files are allowed.";
+        }
+
+        // Salva os dados do PDF no repositório
+        PdfData pdfData = repository.save(PdfData.builder()
+                .name(file.getOriginalFilename())
+                .type(file.getContentType())
+                .pdfData(file.getBytes()) // Não precisa de compressão para PDF
+                .build());
+
+        if (pdfData != null) {
+            return "PDF uploaded successfully: " + file.getOriginalFilename();
+        }
+        return null;
+    }
+
+}
