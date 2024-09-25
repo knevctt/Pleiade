@@ -2,10 +2,8 @@ package app.Pleiade.Controller;
 
 import app.Pleiade.Entity.User;
 import app.Pleiade.Service.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -38,6 +35,55 @@ class UserControllerTest {
         user.setId(1L);
         user.setName("John");
         user.setEmail("john@example.com");
+    }
+
+    @Test
+    void testSaveUser_WhenExceptionThrown_ShouldReturnBadRequest() throws Exception {
+        when(userService.save(any(User.class))).thenThrow(new RuntimeException("Erro ao salvar usuário"));
+
+        mockMvc.perform(post("/api/user/save")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"John\", \"email\":\"john@example.com\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(""));
+    }
+
+    @Test
+    void testUpdateUser_WhenExceptionThrown_ShouldReturnBadRequest() throws Exception {
+        when(userService.update(any(User.class), eq(1L))).thenThrow(new RuntimeException("Erro ao atualizar usuário"));
+
+        mockMvc.perform(put("/api/user/update/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"John\", \"email\":\"john@example.com\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(""));
+    }
+
+    @Test
+    void testDeleteUser_WhenExceptionThrown_ShouldReturnBadRequest() throws Exception {
+        when(userService.delete(1L)).thenThrow(new RuntimeException("Erro ao deletar usuário"));
+
+        mockMvc.perform(delete("/api/user/delete/1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(""));
+    }
+
+    @Test
+    void testFindAllUsers_WhenExceptionThrown_ShouldReturnBadRequest() throws Exception {
+        when(userService.findAll()).thenThrow(new RuntimeException("Erro ao buscar todos os usuários"));
+
+        mockMvc.perform(get("/api/user/findAll"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(""));
+    }
+
+    @Test
+    void testFindUserById_WhenExceptionThrown_ShouldReturnBadRequest() throws Exception {
+        when(userService.findById(1L)).thenThrow(new RuntimeException("Erro ao buscar usuário"));
+
+        mockMvc.perform(get("/api/user/findById/1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(""));
     }
 
     @Test

@@ -24,5 +24,8 @@ public class PdfData {
     @Lob
     @Column(name = "pdf_data", columnDefinition="LONGBLOB")
     private byte[] pdfData;
+
+    @ManyToOne
+    private Book book;
 }
 

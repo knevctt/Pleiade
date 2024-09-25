@@ -39,10 +39,4 @@ public class User {
 
     @NotBlank
     private String password;
-
-    @NotBlank
-    private String institutionOrAffiliation;
-
-    @NotBlank
-    private String country;
 }

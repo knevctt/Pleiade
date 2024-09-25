@@ -39,8 +39,6 @@ class UserRepositoryTest {
         data.setEmail(email);
         data.setUserName("john123");
         data.setPassword("password123");
-        data.setCountry("USA");
-        data.setInstitutionOrAffiliation("University");
         data.setLastName("Doe");
         data.setAccessLevel(0);
 
