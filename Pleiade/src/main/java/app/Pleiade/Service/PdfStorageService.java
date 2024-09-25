@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class PdfStorageService {
@@ -29,6 +30,11 @@ public class PdfStorageService {
                 .build());
 
         return "PDF uploaded successfully: " + file.getOriginalFilename();
+    }
+
+    public PdfData getPDF(String name) {
+        Optional<PdfData> pdfData = repository.findByName(name);
+        return pdfData.orElse(null);
     }
 
 }
