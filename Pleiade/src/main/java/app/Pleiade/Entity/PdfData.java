@@ -25,7 +25,7 @@ public class PdfData {
     @Column(name = "pdf_data", columnDefinition="LONGBLOB")
     private byte[] pdfData;
 
-    @ManyToOne
+    @OneToOne(mappedBy = "pdfData")
     private Book book;
 }
 

@@ -1,35 +1,67 @@
 package app.Pleiade.Controller;
 
 import app.Pleiade.Entity.Book;
-import app.Pleiade.Entity.PdfData;
 import app.Pleiade.Entity.User;
 import app.Pleiade.Service.BookService;
-import app.Pleiade.Service.PdfStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/book")
+@RequestMapping("/api/book")
 public class BookController {
 
     @Autowired
     private BookService bookService;
 
-    @Autowired
-    private PdfStorageService pdfStorageService;
+    @GetMapping("/findAll")
+    public ResponseEntity<List<Book>> findAll() {
+        try {
+            List<Book> lista = this.bookService.findAll();
+            return new ResponseEntity<>(lista, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
 
-
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<Book> findById(@PathVariable long id) {
+        try {
+            Book book = this.bookService.findById(id);
+            return new ResponseEntity<>(book, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @PostMapping("/save")
-    public ResponseEntity<String> save(@RequestBody Book book, PdfData file ) {
+    public ResponseEntity<String> save(@RequestBody Book book) {
         try {
-//            pdfStorageService.uploadPDF(file).getBytes();
             String mesage = this.bookService.save(book);
+            return new ResponseEntity<>(mesage, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> update(@RequestBody Book book, @PathVariable long id) {
+        try {
+            String mesage = this.bookService.update(book, id);
+            return new ResponseEntity<>(mesage, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable long id) {
+        try {
+            String mesage = this.bookService.delete(id);
             return new ResponseEntity<>(mesage, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

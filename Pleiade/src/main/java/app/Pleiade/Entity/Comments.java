@@ -20,13 +20,4 @@ public class Comments {
     private String comment;
 
     private Timestamp dateHour;
-
-    @ManyToOne
-    @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
 }
