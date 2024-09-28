@@ -38,7 +38,4 @@ public class User {
     @NotBlank
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comments> comments;
-
 }

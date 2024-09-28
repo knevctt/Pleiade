@@ -18,6 +18,7 @@ public class Book {
 
     private String synopsis;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comments> comments;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pdf_id", referencedColumnName = "id")
+    private PdfData pdfData;
 }
