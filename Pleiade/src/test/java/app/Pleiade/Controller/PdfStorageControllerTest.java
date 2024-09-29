@@ -89,6 +89,22 @@ public class PdfStorageControllerTest {
     }
 
     @Test
+    void testUploadPDF_BookIdLessThanOrEqualToZero() throws IOException {
+        // Simular um arquivo PDF
+        MockMultipartFile file = new MockMultipartFile("file", "test.pdf", "application/pdf", "test content".getBytes());
+
+        // Teste quando bookId é <= 0
+        ResponseEntity<String> response = pdfStorageController.uploadPDF(file, 0L);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Invalid book ID", response.getBody());
+
+        // Teste quando bookId é negativo
+        response = pdfStorageController.uploadPDF(file, -1L);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Invalid book ID", response.getBody());
+    }
+
+    @Test
     void testDownloadPDF_Success() {
         // Simula o PDF a ser retornado
         String pdfName = "test.pdf";
