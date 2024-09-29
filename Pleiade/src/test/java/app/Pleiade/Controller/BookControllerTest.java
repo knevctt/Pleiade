@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -156,6 +157,45 @@ class BookControllerTest {
         ResponseEntity<String> response = bookController.delete(3L);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());
+    }
+
+    @Test
+    public void testFindByTitle_BookFound() {
+        // Mockando o comportamento do serviço para retornar um livro
+        Book book = new Book();
+        book.setTitle("Effective Java");
+        when(bookService.findByTitle(anyString())).thenReturn(Optional.of(book));
+
+        // Chamando o método do controller
+        ResponseEntity<Book> response = bookController.findByName("Effective Java");
+
+        // Verificando o status HTTP e o corpo da resposta
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Effective Java", response.getBody().getTitle());
+    }
+
+    @Test
+    public void testFindByTitle_BookNotFound() {
+        // Mockando o comportamento do serviço para retornar um Optional vazio
+        when(bookService.findByTitle(anyString())).thenReturn(Optional.empty());
+
+        // Chamando o método do controller
+        ResponseEntity<Book> response = bookController.findByName("Unknown Book");
+
+        // Verificando o status HTTP
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void testFindByTitle_InternalServerError() {
+        // Mockando o comportamento do serviço para lançar uma exceção
+        when(bookService.findByTitle(anyString())).thenThrow(new RuntimeException("Internal Error"));
+
+        // Chamando o método do controller
+        ResponseEntity<Book> response = bookController.findByName("Some Book");
+
+        // Verificando o status HTTP
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }
 
