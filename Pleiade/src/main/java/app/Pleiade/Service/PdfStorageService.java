@@ -32,6 +32,11 @@ public class PdfStorageService {
             throw new EntityNotFoundException("Book not found with ID: " + bookId);
         }
 
+        // Verifica se o usuário é Admin para poder fazer upload(será implementado uma proxima vez)
+//        if (user.getAccessLevel != 1){
+//            throw new Exception("Only admin can upload files");
+//        }
+
         Book book = optionalBook.get();
 
         System.out.println(file.getBytes() + "ok");
@@ -52,6 +57,11 @@ public class PdfStorageService {
 
     public PdfData getPDF(String name) {
         Optional<PdfData> pdfData = repository.findByName(name);
+        if (pdfData.isEmpty()) {
+            System.out.println("PDF not found with name: " + name);
+        } else {
+            System.out.println("PDF found: " + pdfData.get().getName());
+        }
         return pdfData.orElse(null);
     }
 

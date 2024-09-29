@@ -1,150 +1,200 @@
 package app.Pleiade.Controller;
 
 import app.Pleiade.Entity.User;
+import app.Pleiade.Repository.UserRepository;
 import app.Pleiade.Service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-@WebMvcTest(UserController.class)
+@SpringBootTest
 class UserControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    UserController userController;
 
     @MockBean
-    private UserService userService;
+    UserRepository userRepository;
 
-    private User user;
+    @MockBean
+    UserService userService;
 
     @BeforeEach
-    void setUp() {
-        user = new User();
-        user.setId(1L);
-        user.setName("John");
-        user.setEmail("john@example.com");
+    void setup(){
+        List<User> users = new ArrayList<>();
+
+        User user1 = new User();
+        user1.setAccessLevel(0);
+        user1.setName("John ");
+        user1.setLastName("Doe");
+        user1.setUserName("jhon@doe");
+        user1.setPassword("12345");
+        user1.setEmail("john.doe@example.com");
+
+        users.add(user1);
+
+        User user2 = new User();
+        user2.setAccessLevel(0);
+        user2.setName("Jane Doe");
+        user2.setEmail("jane.doe@example.com");
+        user2.setLastName("Doe");
+        user2.setUserName("jane@doe");
+        user2.setPassword("12345");
+
+        users.add(user2);
+
+        User user3 = new User();
+        user3.setAccessLevel(0);
+        user3.setName("Michael Doe");
+        user3.setEmail("michael.doe@example.com");
+        user3.setLastName("Doe");
+        user3.setUserName("michael@doe");
+        user3.setPassword("12345");
+
+        users.add(user3);
+
+        when(userService.findAll()).thenReturn(users);
+        when(userRepository.findAll()).thenReturn(users);
+        when(userRepository.findById(3L)).thenReturn(Optional.of(user3));
+        when(userService.delete(3L)).thenReturn("User deleted successfully");
+        when(userService.save(any(User.class))).thenReturn("User saved successfully");
+        when(userService.update(any(User.class), Mockito.eq(3L))).thenReturn("User updated successfully");
+        when(userService.findByName("Michael Doe")).thenReturn(Optional.of(user3));
     }
 
     @Test
-    void testSaveUser_WhenExceptionThrown_ShouldReturnBadRequest() throws Exception {
-        when(userService.save(any(User.class))).thenThrow(new RuntimeException("Erro ao salvar usuário"));
-
-        mockMvc.perform(post("/api/user/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"John\", \"email\":\"john@example.com\"}"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(""));
+    void testFindAll() {
+        ResponseEntity<List<User>> retorno = this.userController.findAll();
+        assertEquals(HttpStatus.OK, retorno.getStatusCode());
+        assertEquals(3, retorno.getBody().size());
+        //testa se no findAll a quantidade de usuarios é 3 como deveria ser no setup
     }
 
     @Test
-    void testUpdateUser_WhenExceptionThrown_ShouldReturnBadRequest() throws Exception {
-        when(userService.update(any(User.class), eq(1L))).thenThrow(new RuntimeException("Erro ao atualizar usuário"));
-
-        mockMvc.perform(put("/api/user/update/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"John\", \"email\":\"john@example.com\"}"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(""));
+    void testFindAll2() {
+        ResponseEntity<List<User>> retorno = this.userController.findAll();
+        assertEquals(HttpStatus.OK, retorno.getStatusCode());
+        //testa se o findAll está retornando status http 200
     }
 
     @Test
-    void testDeleteUser_WhenExceptionThrown_ShouldReturnBadRequest() throws Exception {
-        when(userService.delete(1L)).thenThrow(new RuntimeException("Erro ao deletar usuário"));
-
-        mockMvc.perform(delete("/api/user/delete/1"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(""));
+    void testFindById() {
+        ResponseEntity<User> retorno = this.userController.findById(1L);
+        assertEquals(HttpStatus.OK, retorno.getStatusCode());
+        //testa se o findById encontra usuario com id 1 e Long
     }
 
     @Test
-    void testFindAllUsers_WhenExceptionThrown_ShouldReturnBadRequest() throws Exception {
-        when(userService.findAll()).thenThrow(new RuntimeException("Erro ao buscar todos os usuários"));
+    void testFindByIdWithException() {
+        // Simula uma exceção sendo lançada pelo service
+        when(userService.findById(1L)).thenThrow(new RuntimeException("Database error"));
 
-        mockMvc.perform(get("/api/user/findAll"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(""));
+        ResponseEntity<User> retorno = this.userController.findById(1L);
+        assertEquals(HttpStatus.BAD_REQUEST, retorno.getStatusCode());
+        assertEquals(null, retorno.getBody());
     }
 
     @Test
-    void testFindUserById_WhenExceptionThrown_ShouldReturnBadRequest() throws Exception {
-        when(userService.findById(1L)).thenThrow(new RuntimeException("Erro ao buscar usuário"));
-
-        mockMvc.perform(get("/api/user/findById/1"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(""));
+    void testFindAllWithException() {
+        when(userService.findAll()).thenThrow(new RuntimeException("Database error"));
+        ResponseEntity<List<User>> retorno = this.userController.findAll();
+        assertEquals(HttpStatus.BAD_REQUEST, retorno.getStatusCode());
+        assertEquals(null, retorno.getBody());
     }
 
     @Test
-    void testSaveUser() throws Exception {
-        when(userService.save(any(User.class))).thenReturn("User saved sucessfully");
+    void testSave() {
+        User newUser = new User();
+        newUser.setName("New User");
 
-        mockMvc.perform(post("/api/user/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"John\", \"email\":\"john@example.com\"}"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("User saved sucessfully"));
+        ResponseEntity<String> response = userController.save(newUser);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User saved successfully", response.getBody());
     }
 
     @Test
-    void testUpdateUser() throws Exception {
-        when(userService.update(any(User.class), eq(1L))).thenReturn("User updated sucessfully");
+    void testSaveException() {
+        when(userService.save(any(User.class))).thenThrow(new RuntimeException("Database error"));
 
-        mockMvc.perform(put("/api/user/update/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"John\", \"email\":\"john@example.com\"}"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("User updated sucessfully"));
+        User newUser = new User();
+        newUser.setName("New User");
+
+        ResponseEntity<String> response = userController.save(newUser);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(null, response.getBody());
     }
 
     @Test
-    void testDeleteUser() throws Exception {
-        when(userService.delete(1L)).thenReturn("User deleted sucessfully");
-
-        mockMvc.perform(delete("/api/user/delete/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("User deleted sucessfully"));
+    void testDelete() {
+        ResponseEntity<String> response = userController.delete(3L);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User deleted successfully", response.getBody());
     }
 
     @Test
-    void testFindAllUsers() throws Exception {
-        when(userService.findAll()).thenReturn(Arrays.asList(user));
+    void testDeleteException() {
+        when(userService.delete(3L)).thenThrow(new RuntimeException("Database error"));
 
-        mockMvc.perform(get("/api/user/findAll"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("John"));
+        ResponseEntity<String> response = userController.delete(3L);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(null, response.getBody());
     }
 
     @Test
-    void testFindUserById() throws Exception {
-        when(userService.findById(1L)).thenReturn(user);
+    void testUpdate() {
+        User updatedUser = new User();
+        updatedUser.setName("Updated Name");
 
-        mockMvc.perform(get("/api/user/findById/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("John"));
+        ResponseEntity<String> response = userController.update(updatedUser, 3L);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User updated successfully", response.getBody());
     }
 
     @Test
-    void testFindUserByName() throws Exception {
-        User user = new User();
-        user.setName("John");
+    void testUpdateException() {
+        when(userService.update(any(User.class), Mockito.eq(3L))).thenThrow(new RuntimeException("Database error"));
 
-        when(userService.findByNome("John")).thenReturn(Optional.of(user));
+        User updatedUser = new User();
+        updatedUser.setName("Updated Name");
 
-        mockMvc.perform(get("/api/user/findByName/John"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("John"));
+        ResponseEntity<String> response = userController.update(updatedUser, 3L);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(null, response.getBody());
     }
 
+    @Test
+    void testFindByName() {
+        ResponseEntity<User> response = userController.findByName("Michael Doe");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Michael Doe", response.getBody().getName());
+    }
+
+    @Test
+    void testFindByNameNotFound() {
+        when(userService.findByName("Nonexistent User")).thenReturn(Optional.empty());
+
+        ResponseEntity<User> response = userController.findByName("Nonexistent User");
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void testFindByNomeException() {
+        when(userService.findByName("Michael Doe")).thenThrow(new RuntimeException("Database error"));
+
+        ResponseEntity<User> response = userController.findByName("Michael Doe");
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
 }

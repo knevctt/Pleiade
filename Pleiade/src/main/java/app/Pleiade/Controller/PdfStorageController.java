@@ -55,8 +55,7 @@ public class PdfStorageController {
 
             return new ResponseEntity<>(pdfData.getPdfData(), headers, HttpStatus.OK);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 }

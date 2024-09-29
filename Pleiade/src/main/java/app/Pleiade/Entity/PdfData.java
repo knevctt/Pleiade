@@ -1,10 +1,7 @@
 package app.Pleiade.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "PdfData")
@@ -12,8 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 public class PdfData {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,5 +25,10 @@ public class PdfData {
 
     @OneToOne(mappedBy = "pdfData")
     private Book book;
+
+    public PdfData(String name, byte[] pdfData) {
+        this.name = name;
+        this.pdfData = pdfData;
+    }
 }
 
