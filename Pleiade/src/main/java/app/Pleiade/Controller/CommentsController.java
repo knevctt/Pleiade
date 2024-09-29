@@ -17,25 +17,41 @@ public class CommentsController {
 
     @PostMapping("/save")
     public ResponseEntity<String> saveComment(@RequestBody Comments comments) {
-        String response = commentsService.save(comments);
-        return ResponseEntity.ok(response);
+        try {
+            String response = commentsService.save(comments);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao salvar comentário: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteComment(@RequestBody Comments comments) {
-        String response = commentsService.delete(comments);
-        return ResponseEntity.ok(response);
+        try {
+            String response = commentsService.delete(comments);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao deletar comentário: " + e.getMessage());
+        }
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<Comments>> getAllComments() {
-        List<Comments> commentsList = commentsService.getAllComments();
-        return ResponseEntity.ok(commentsList);
+        try {
+            List<Comments> commentsList = commentsService.getAllComments();
+            return ResponseEntity.ok(commentsList);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
     }
 
     @PutMapping("/update")
     public ResponseEntity<String> updateComment(@RequestBody Comments comments) {
-        String response = commentsService.UpdateComment(comments);
-        return ResponseEntity.ok(response);
+        try {
+            String response = commentsService.UpdateComment(comments);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao atualizar comentário: " + e.getMessage());
+        }
     }
 }

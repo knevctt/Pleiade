@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
-import java.security.Timestamp;
 
 @Entity
 @Data
@@ -14,10 +14,10 @@ import java.security.Timestamp;
 public class Comments {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String comment;
 
-    private Timestamp dateHour;
+    private LocalDateTime dateHour;
 }
