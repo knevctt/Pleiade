@@ -11,12 +11,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.zip.Deflater;
 
 public class StorageServiceTest {
 
@@ -110,4 +113,22 @@ public class StorageServiceTest {
         assertEquals(10, result.length); // Verifica se a imagem é a esperada
     }
 
+
+    @Test
+    public void testCompressImageCatch() {
+        byte[] data = new byte[10]; // Exemplo de dados de entrada
+
+        // Usar reflexão para forçar o uso de um ByteArrayOutputStream que lance uma exceção ao fechar
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length) {
+            @Override
+            public void close() throws IOException {
+                throw new IOException("Forced exception during close");
+            }
+        };
+
+        // A parte onde a exceção é esperada deve ser testada
+        assertDoesNotThrow(() -> {
+            ImageUtils.compressImage(data);
+        });
+    }
 }

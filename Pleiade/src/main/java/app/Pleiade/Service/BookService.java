@@ -1,7 +1,6 @@
 package app.Pleiade.Service;
 
 import app.Pleiade.Entity.Book;
-import app.Pleiade.Entity.User;
 import app.Pleiade.Repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,5 +38,9 @@ public class BookService {
     public String delete(long id){
         this.bookRepository.deleteById(id);
         return "Book deleted sucessfully";
+    }
+
+    public Optional<Book> findByTitle(String title) {
+        return bookRepository.findByTitle(title);
     }
 }

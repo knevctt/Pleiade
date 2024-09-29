@@ -67,4 +67,18 @@ public class BookController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/findByTitle/{title}")
+    public ResponseEntity<Book> findByName(@PathVariable String title) {
+        try {
+            Optional<Book> book = bookService.findByTitle(title);
+            if (book.isPresent()) {
+                return new ResponseEntity<>(book.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
