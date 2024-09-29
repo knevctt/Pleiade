@@ -68,9 +68,9 @@ public class UserController {
     }
 
     @GetMapping("/findByName/{name}")
-    public ResponseEntity<User> findByNome(@PathVariable String name) {
+    public ResponseEntity<User> findByName(@PathVariable String name) {
         try {
-            Optional<User> user = userService.findByNome(name);
+            Optional<User> user = userService.findByName(name);
             if (user.isPresent()) {
                 return new ResponseEntity<>(user.get(), HttpStatus.OK);
             } else {

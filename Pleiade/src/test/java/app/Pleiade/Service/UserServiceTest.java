@@ -80,7 +80,7 @@ class UserServiceTest {
         user.setName("John");
 
         when(userRepository.findByName("John")).thenReturn(Optional.of(user));
-        Optional<User> result = userService.findByNome("John");
+        Optional<User> result = userService.findByName("John");
 
         assertTrue(result.isPresent());
         assertEquals("John", result.get().getName());

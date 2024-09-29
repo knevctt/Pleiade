@@ -5,6 +5,7 @@ import app.Pleiade.Repository.UserRepository;
 import app.Pleiade.Service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -68,7 +69,10 @@ class UserControllerTest {
         when(userService.findAll()).thenReturn(users);
         when(userRepository.findAll()).thenReturn(users);
         when(userRepository.findById(3L)).thenReturn(Optional.of(user3));
+        when(userService.delete(3L)).thenReturn("User deleted successfully");
         when(userService.save(any(User.class))).thenReturn("User saved successfully");
+        when(userService.update(any(User.class), Mockito.eq(3L))).thenReturn("User updated successfully");
+        when(userService.findByName("Michael Doe")).thenReturn(Optional.of(user3));
     }
 
     @Test
@@ -86,7 +90,7 @@ class UserControllerTest {
         //testa se o findAll está retornando status http 200
     }
 
-
+    @Test
     void testFindById() {
         ResponseEntity<User> retorno = this.userController.findById(1L);
         assertEquals(HttpStatus.OK, retorno.getStatusCode());
@@ -133,4 +137,64 @@ class UserControllerTest {
         assertEquals(null, response.getBody());
     }
 
+    @Test
+    void testDelete() {
+        ResponseEntity<String> response = userController.delete(3L);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User deleted successfully", response.getBody());
+    }
+
+    @Test
+    void testDeleteException() {
+        when(userService.delete(3L)).thenThrow(new RuntimeException("Database error"));
+
+        ResponseEntity<String> response = userController.delete(3L);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(null, response.getBody());
+    }
+
+    @Test
+    void testUpdate() {
+        User updatedUser = new User();
+        updatedUser.setName("Updated Name");
+
+        ResponseEntity<String> response = userController.update(updatedUser, 3L);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User updated successfully", response.getBody());
+    }
+
+    @Test
+    void testUpdateException() {
+        when(userService.update(any(User.class), Mockito.eq(3L))).thenThrow(new RuntimeException("Database error"));
+
+        User updatedUser = new User();
+        updatedUser.setName("Updated Name");
+
+        ResponseEntity<String> response = userController.update(updatedUser, 3L);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(null, response.getBody());
+    }
+
+    @Test
+    void testFindByName() {
+        ResponseEntity<User> response = userController.findByName("Michael Doe");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Michael Doe", response.getBody().getName());
+    }
+
+    @Test
+    void testFindByNameNotFound() {
+        when(userService.findByName("Nonexistent User")).thenReturn(Optional.empty());
+
+        ResponseEntity<User> response = userController.findByName("Nonexistent User");
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void testFindByNomeException() {
+        when(userService.findByName("Michael Doe")).thenThrow(new RuntimeException("Database error"));
+
+        ResponseEntity<User> response = userController.findByName("Michael Doe");
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
 }
