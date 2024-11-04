@@ -17,10 +17,24 @@ public class Book {
 
     private String author;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT") // Para grandes quantidades de texto
+    private String imageDatas;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT") // Para grandes quantidades de texto
+    private String pdfDatas;
+
+    @Lob
+    @Column(name = "synopsis", columnDefinition = "TEXT")
     private String synopsis;
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pdf_id", referencedColumnName = "id")
     private PdfData pdfData;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    private ImageData imageData;
 }

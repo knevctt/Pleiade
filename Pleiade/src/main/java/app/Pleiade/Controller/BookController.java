@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/book")
@@ -17,6 +18,59 @@ public class BookController {
 
     @Autowired
     private BookService bookService;
+
+    @PostMapping("/upload")
+    public ResponseEntity<Map<String, String>> uploadBook(
+            @RequestParam("title") String title,
+            @RequestParam("author") String author,
+            @RequestParam("synopsis") String synopsis,
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("pdf") MultipartFile pdf) {
+
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            String base64ImageData = Base64.getEncoder().encodeToString(image.getBytes());
+            String base64PdfData = Base64.getEncoder().encodeToString(pdf.getBytes());
+
+            Book book = new Book();
+            book.setTitle(title);
+            book.setAuthor(author);
+            book.setSynopsis(synopsis);
+            book.setImageDatas(base64ImageData);
+            book.setPdfDatas(base64PdfData);
+
+            bookService.save(book);
+
+            response.put("message", "Upload bem-sucedido");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IOException e) {
+            response.put("message", "Erro no upload do arquivo");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+    @PostMapping("/addWithImageAndPdf")
+    public ResponseEntity<Book> addBookWithImageAndPdf(
+            @RequestParam("imageFile") MultipartFile imageFile,
+            @RequestParam("pdfFile") MultipartFile pdfFile,
+            @RequestParam("title") String title,
+            @RequestParam("author") String author,
+            @RequestParam("synopsis") String synopsis) {
+        try {
+            Book book = new Book();
+            book.setTitle(title);
+            book.setAuthor(author);
+            book.setSynopsis(synopsis);
+
+            Book savedBook = bookService.saveBookWithImageAndPdf(book, imageFile, pdfFile);
+            return ResponseEntity.ok(savedBook);
+        } catch (IOException e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/findAll")
     public ResponseEntity<List<Book>> findAll() {
