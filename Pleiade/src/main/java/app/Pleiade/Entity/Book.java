@@ -1,5 +1,6 @@
 package app.Pleiade.Entity;
 
+import app.Pleiade.Enum.Genero;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -37,4 +38,7 @@ public class Book {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id", referencedColumnName = "id")
     private ImageData imageData;
+
+    @Enumerated(EnumType.STRING)
+    private Genero genero;
 }

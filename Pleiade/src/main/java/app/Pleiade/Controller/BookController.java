@@ -2,6 +2,7 @@ package app.Pleiade.Controller;
 
 import app.Pleiade.Entity.Book;
 import app.Pleiade.Entity.User;
+import app.Pleiade.Enum.Genero;
 import app.Pleiade.Service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class BookController {
             @RequestParam("author") String author,
             @RequestParam("synopsis") String synopsis,
             @RequestParam("image") MultipartFile image,
-            @RequestParam("pdf") MultipartFile pdf) {
+            @RequestParam("pdf") MultipartFile pdf,
+            @RequestParam("genero") Genero genero) { // Adicionando o parâmetro gênero
 
         Map<String, String> response = new HashMap<>();
 
@@ -39,6 +41,7 @@ public class BookController {
             book.setSynopsis(synopsis);
             book.setImageDatas(base64ImageData);
             book.setPdfDatas(base64PdfData);
+            book.setGenero(genero); // Definindo o gênero
 
             bookService.save(book);
 
@@ -49,6 +52,7 @@ public class BookController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
 
@@ -135,4 +139,6 @@ public class BookController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/genre") public List<Book> getBooksByGenero(@RequestParam Genero genero) { return bookService.findByGenre(genero); }
 }
