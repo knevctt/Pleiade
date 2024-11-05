@@ -86,6 +86,11 @@ public class BookService {
         }
     }
 
-    public List<Book> findByGenre(Genero genero) { return bookRepository.findByGenero(genero); }
+    public List<Book> findByGenre(Genero genero) {
+        return bookRepository.findByGenero(genero);
+    }
 
+    public List<Book> searchBooks(String query) {
+        return bookRepository.findByTitleContainingOrAuthorContainingOrSynopsisContaining(query, query, query);
+    }
 }

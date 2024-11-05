@@ -140,5 +140,22 @@ public class BookController {
         }
     }
 
-    @GetMapping("/genre") public List<Book> getBooksByGenero(@RequestParam Genero genero) { return bookService.findByGenre(genero); }
+    @GetMapping("/genre") public List<Book> getBooksByGenero(@RequestParam Genero genero) {
+        return bookService.findByGenre(genero);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Book>> searchBooks(@RequestParam("query") String query) {
+        try {
+            List<Book> books = bookService.searchBooks(query);
+            if (!books.isEmpty()) {
+                return new ResponseEntity<>(books, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
