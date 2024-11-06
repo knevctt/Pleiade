@@ -49,7 +49,7 @@ public class PdfStorageService {
                 .build());
 
         // Associa o PDF ao livro
-        book.setPdfData(pdfData);
+//        book.setPdfData(pdfData);
         bookRepository.save(book); // Salva as alterações no livro
 
         return "PDF uploaded successfully: " + file.getOriginalFilename();

@@ -20,15 +20,10 @@ public class PdfData {
     private String type;
 
     @Lob
-    @Column(name = "pdf_data", columnDefinition="LONGBLOB", length = 1000)
+    @Column(name = "pdf_data", columnDefinition = "LONGBLOB")
     private byte[] pdfData;
 
     @OneToOne(mappedBy = "pdfData")
     private Book book;
-
-    public PdfData(String name, byte[] pdfData) {
-        this.name = name;
-        this.pdfData = pdfData;
-    }
 }
 

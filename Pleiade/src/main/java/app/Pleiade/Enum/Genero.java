@@ -9,5 +9,6 @@ public enum Genero {
     TERROR,
     BIOGRAFIA,
     TECNOLOGIA,
-    HISTORIA
+    HISTORIA,
+    MISTERIO
 }

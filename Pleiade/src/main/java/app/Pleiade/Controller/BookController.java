@@ -1,8 +1,12 @@
 package app.Pleiade.Controller;
 
 import app.Pleiade.Entity.Book;
+import app.Pleiade.Entity.ImageData;
+import app.Pleiade.Entity.PdfData;
 import app.Pleiade.Entity.User;
 import app.Pleiade.Enum.Genero;
+import app.Pleiade.Repository.PdfStorageRepository;
+import app.Pleiade.Repository.StorageRepository;
 import app.Pleiade.Service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,12 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private StorageRepository storageRepository;
+
+    @Autowired
+    private PdfStorageRepository pdfStorageRepository;
+
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadBook(
             @RequestParam("title") String title,
@@ -27,7 +37,7 @@ public class BookController {
             @RequestParam("synopsis") String synopsis,
             @RequestParam("image") MultipartFile image,
             @RequestParam("pdf") MultipartFile pdf,
-            @RequestParam("genero") Genero genero) { // Adicionando o parâmetro gênero
+            @RequestParam("genero") String genero) { // Adicionando o parâmetro gênero
 
         Map<String, String> response = new HashMap<>();
 
@@ -35,13 +45,29 @@ public class BookController {
             String base64ImageData = Base64.getEncoder().encodeToString(image.getBytes());
             String base64PdfData = Base64.getEncoder().encodeToString(pdf.getBytes());
 
+            ImageData imageData = new ImageData();
+            imageData.setName(image.getOriginalFilename());
+            imageData.setType(image.getContentType());
+            imageData.setImageData(image.getBytes());
+            imageData = storageRepository.save(imageData);
+
+            PdfData pdfData = new PdfData();
+            pdfData.setName(pdf.getOriginalFilename());
+            pdfData.setType(pdf.getContentType());
+            pdfData.setPdfData(pdf.getBytes());
+            pdfData = pdfStorageRepository.save(pdfData);
+
+            Genero enumGenero = Genero.valueOf(genero.toUpperCase());
+
             Book book = new Book();
             book.setTitle(title);
             book.setAuthor(author);
             book.setSynopsis(synopsis);
             book.setImageDatas(base64ImageData);
             book.setPdfDatas(base64PdfData);
-            book.setGenero(genero); // Definindo o gênero
+            book.setGenero(enumGenero); // Definindo o gênero
+            book.setImageData(imageData);
+            book.setPdfData(pdfData);
 
             bookService.save(book);
 
