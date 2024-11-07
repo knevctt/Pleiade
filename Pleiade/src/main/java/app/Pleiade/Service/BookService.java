@@ -86,8 +86,8 @@ public class BookService {
         }
     }
 
-    public List<Book> findByGenre(Genero genero) {
-        return bookRepository.findByGenero(genero);
+    public List<Book> findByGenero(Genero genero) {
+        return bookRepository.findByGenerosContaining(genero);
     }
 
     public List<Book> searchBooks(String query) {

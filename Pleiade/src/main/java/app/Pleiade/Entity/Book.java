@@ -39,6 +39,9 @@ public class Book {
     @JoinColumn(name = "image_id", referencedColumnName = "id")
     private ImageData imageData;
 
+    @ElementCollection(targetClass = Genero.class)
     @Enumerated(EnumType.STRING)
-    private Genero genero;
+    @CollectionTable(name = "book_generos")
+    @Column(name = "genero")
+    private List<Genero> generos;
 }

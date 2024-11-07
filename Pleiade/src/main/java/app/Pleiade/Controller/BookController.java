@@ -8,6 +8,8 @@ import app.Pleiade.Enum.Genero;
 import app.Pleiade.Repository.PdfStorageRepository;
 import app.Pleiade.Repository.StorageRepository;
 import app.Pleiade.Service.BookService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +39,7 @@ public class BookController {
             @RequestParam("synopsis") String synopsis,
             @RequestParam("image") MultipartFile image,
             @RequestParam("pdf") MultipartFile pdf,
-            @RequestParam("genero") String genero) { // Adicionando o parâmetro gênero
+            @RequestParam("generos") String generosJson) { // Adicionando o parâmetro gênero
 
         Map<String, String> response = new HashMap<>();
 
@@ -57,7 +59,7 @@ public class BookController {
             pdfData.setPdfData(pdf.getBytes());
             pdfData = pdfStorageRepository.save(pdfData);
 
-            Genero enumGenero = Genero.valueOf(genero.toUpperCase());
+            List<Genero> generos = new Gson().fromJson(generosJson, new TypeToken<List<Genero>>() {}.getType());
 
             Book book = new Book();
             book.setTitle(title);
@@ -65,7 +67,7 @@ public class BookController {
             book.setSynopsis(synopsis);
             book.setImageDatas(base64ImageData);
             book.setPdfDatas(base64PdfData);
-            book.setGenero(enumGenero); // Definindo o gênero
+            book.setGeneros(generos); // Definindo o gênero
             book.setImageData(imageData);
             book.setPdfData(pdfData);
 
@@ -166,8 +168,8 @@ public class BookController {
         }
     }
 
-    @GetMapping("/genre") public List<Book> getBooksByGenero(@RequestParam Genero genero) {
-        return bookService.findByGenre(genero);
+    @GetMapping("/genero") public List<Book> getBooksByGenero(@RequestParam Genero genero) {
+        return bookService.findByGenero(genero);
     }
 
     @GetMapping("/search")
