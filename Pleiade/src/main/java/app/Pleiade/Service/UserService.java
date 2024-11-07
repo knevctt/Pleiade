@@ -44,4 +44,11 @@ public class UserService {
     public Optional<User> findByName(String name) {
         return userRepository.findByName(name);
     }
+
+    public User authenticate(String email, String password) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent() && optionalUser.get().getPassword().equals(password)) {
+            return optionalUser.get();
+        } return null;
+    }
 }

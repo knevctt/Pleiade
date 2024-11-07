@@ -17,6 +17,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User user) {
+        User authenticatedUser = userService.authenticate(user.getEmail(), user.getPassword());
+        if (authenticatedUser != null) {
+            return ResponseEntity.ok(authenticatedUser);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
+        }
+    }
+
     @PostMapping("/save")
     public ResponseEntity<String> save(@RequestBody User user) {
         try {

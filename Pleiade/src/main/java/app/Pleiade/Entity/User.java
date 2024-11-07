@@ -3,10 +3,7 @@ package app.Pleiade.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -21,8 +18,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull//0 for user 1 for admin 2 for dev access
-    private int accessLevel;
+    //é um ENUM
+    @NotNull
+    private AccessLevel accessLevel;
 
     @NotBlank
     private String name;
