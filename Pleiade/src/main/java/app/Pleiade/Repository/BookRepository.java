@@ -1,7 +1,7 @@
 package app.Pleiade.Repository;
 
 import app.Pleiade.Entity.Book;
-import app.Pleiade.Enum.Genero;
+import app.Pleiade.Entity.Enum.Genero;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

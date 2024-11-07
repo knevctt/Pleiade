@@ -1,6 +1,6 @@
 package app.Pleiade.Entity;
 
-import app.Pleiade.Enum.Genero;
+import app.Pleiade.Entity.Enum.Genero;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;

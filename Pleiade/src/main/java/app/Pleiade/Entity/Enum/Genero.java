@@ -1,4 +1,4 @@
-package app.Pleiade.Enum;
+package app.Pleiade.Entity.Enum;
 
 public enum Genero {
     FICCAO,

@@ -3,7 +3,7 @@ package app.Pleiade.Service;
 import app.Pleiade.Entity.Book;
 import app.Pleiade.Entity.ImageData;
 import app.Pleiade.Entity.PdfData;
-import app.Pleiade.Enum.Genero;
+import app.Pleiade.Entity.Enum.Genero;
 import app.Pleiade.Repository.BookRepository;
 import app.Pleiade.Repository.PdfStorageRepository;
 import app.Pleiade.Repository.StorageRepository;

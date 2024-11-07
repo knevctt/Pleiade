@@ -3,15 +3,18 @@ package app.Pleiade.Controller;
 import app.Pleiade.Entity.Book;
 import app.Pleiade.Entity.ImageData;
 import app.Pleiade.Entity.PdfData;
-import app.Pleiade.Entity.User;
-import app.Pleiade.Enum.Genero;
+import app.Pleiade.Entity.Enum.Genero;
 import app.Pleiade.Repository.PdfStorageRepository;
 import app.Pleiade.Repository.StorageRepository;
 import app.Pleiade.Service.BookService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -185,5 +188,20 @@ public class BookController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @GetMapping("/downloadPdf/{id}")
+    public ResponseEntity<byte[]> downloadPDF(@PathVariable long id) {
+        Book book = this.bookService.findById(id);
+        if (book != null && book.getPdfData() != null) {
+            PdfData pdfData = book.getPdfData();
+            if (pdfData != null) { HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_PDF);
+                headers.setContentDispositionFormData("attachment", pdfData.getName());
+                return new ResponseEntity<>(pdfData.getPdfData(), headers, HttpStatus.OK);
+            }
+        } return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
 
 }

@@ -1,9 +1,11 @@
 package app.Pleiade.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
 
 import java.util.List;
 
@@ -20,6 +22,7 @@ public class User {
 
     //é um ENUM
     @NotNull
+    @Enumerated(EnumType.STRING)
     private AccessLevel accessLevel;
 
     @NotBlank
