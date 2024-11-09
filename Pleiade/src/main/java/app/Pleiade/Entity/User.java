@@ -20,11 +20,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //é um ENUM
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private AccessLevel accessLevel;
-
     @NotBlank
     private String name;
 
