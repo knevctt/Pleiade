@@ -42,14 +42,15 @@ public class UserEntity implements UserDetails {
     @Column
     private String role;
 
-    public UserEntity(String userName, String password, String role) {
+    public UserEntity(String name, String lastName, String userName, String email, String password, String role) {
+        this.name = name;
+        this.lastName = lastName;
         this.userName = userName;
+        this.email = email;
         this.password = password;
         this.role = role;
     }
 
-    public UserEntity(String userName, String password, String encode, String s) {
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

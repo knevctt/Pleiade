@@ -1,6 +1,7 @@
 package app.Pleiade.Service;
 
 import app.Pleiade.Controller.Login.LoginRequest;
+import app.Pleiade.Dto.UserRegistrationRequest;
 import app.Pleiade.Entity.UserEntity;
 import app.Pleiade.Repository.UserRepository;
 import jakarta.annotation.PostConstruct;
@@ -93,13 +94,16 @@ public class UserService {
         return jwtToken;
     }
 
-    public void saveNewUser(String userName, String password, Boolean isAdmin) {
-        repository.save( new UserEntity(
-                 "userName", // userName
-                 "password", // password
-                 passwordEncoder.encode(password),
-                 isAdmin ? "admin" : "user" // role
-                )
-            );
-        }
+    public void saveNewUser(UserRegistrationRequest user) {
+        UserEntity newUser = new UserEntity(
+                user.getName(),
+                user.getLastName(),
+                user.getUserName(),
+                user.getEmail(),
+                passwordEncoder.encode(user.getPassword()),
+                user.getIsAdmin() ? "admin" : "user"
+        );
+        repository.save(newUser);
+    }
+
     }

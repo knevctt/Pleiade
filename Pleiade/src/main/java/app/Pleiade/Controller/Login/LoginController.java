@@ -1,5 +1,6 @@
 package app.Pleiade.Controller.Login;
 
+import app.Pleiade.Dto.UserRegistrationRequest;
 import app.Pleiade.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,8 +40,9 @@ public class LoginController {
 
 
     @PostMapping("novo-usuario/save")
-    public ResponseEntity<HttpStatus> saveNewUser(@RequestParam String userName,@RequestParam String password,@RequestParam Boolean isAdmin){
-        pessoaService.saveNewUser(userName, password,isAdmin);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+    public ResponseEntity<HttpStatus> saveNewUser(@RequestBody UserRegistrationRequest user) {
+            pessoaService.saveNewUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+
 }
