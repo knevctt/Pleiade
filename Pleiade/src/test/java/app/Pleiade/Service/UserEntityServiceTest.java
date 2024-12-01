@@ -1,6 +1,6 @@
 package app.Pleiade.Service;
 
-import app.Pleiade.Entity.User;
+import app.Pleiade.Entity.UserEntity;
 import app.Pleiade.Repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class UserServiceTest {
+class UserEntityServiceTest {
 
     @InjectMocks
     private UserService userService;
@@ -23,12 +23,12 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    private User user;
+    private UserEntity user;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        user = new User();
+        user = new UserEntity();
         user.setId(1L);
         user.setName("John");
         user.setEmail("john@example.com");
@@ -60,9 +60,9 @@ class UserServiceTest {
 
     @Test
     void findAllUsers() {
-        List<User> users = Arrays.asList(user);
+        List<UserEntity> users = Arrays.asList(user);
         when(userRepository.findAll()).thenReturn(users);
-        List<User> result = userService.findAll();
+        List<UserEntity> result = userService.findAll();
         assertEquals(1, result.size());
         assertEquals("John", result.get(0).getName());
     }
@@ -70,17 +70,17 @@ class UserServiceTest {
     @Test
     void findUserById() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        User result = userService.findById(1L);
+        UserEntity result = userService.findById(1L);
         assertEquals("John", result.getName());
     }
 
     @Test
     void findUserByName() {
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setName("John");
 
         when(userRepository.findByName("John")).thenReturn(Optional.of(user));
-        Optional<User> result = userService.findByName("John");
+        Optional<UserEntity> result = userService.findByName("John");
 
         assertTrue(result.isPresent());
         assertEquals("John", result.get().getName());

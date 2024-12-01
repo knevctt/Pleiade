@@ -1,6 +1,6 @@
 package app.Pleiade.Controller;
 
-import app.Pleiade.Entity.User;
+import app.Pleiade.Entity.UserEntity;
 import app.Pleiade.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
-        User authenticatedUser = userService.authenticate(user.getEmail(), user.getPassword());
+    public ResponseEntity<?> login(@RequestBody UserEntity user) {
+        UserEntity authenticatedUser = userService.authenticate(user.getEmail(), user.getPassword());
         if (authenticatedUser != null) {
             return ResponseEntity.ok(authenticatedUser);
         } else {
@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<String> save(@RequestBody User user) {
+    public ResponseEntity<String> save(@RequestBody UserEntity user) {
         try {
             String mesage = this.userService.save(user);
             return new ResponseEntity<>(mesage, HttpStatus.OK);
@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> update(@RequestBody User user, @PathVariable long id) {
+    public ResponseEntity<String> update(@RequestBody UserEntity user, @PathVariable long id) {
         try {
             String mesage = this.userService.update(user, id);
             return new ResponseEntity<>(mesage, HttpStatus.OK);
@@ -58,9 +58,9 @@ public class UserController {
     }
 
     @GetMapping("/findAll")
-    public ResponseEntity<List<User>> findAll() {
+    public ResponseEntity<List<UserEntity>> findAll() {
         try {
-            List<User> lista = this.userService.findAll();
+            List<UserEntity> lista = this.userService.findAll();
             return new ResponseEntity<>(lista, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -68,9 +68,9 @@ public class UserController {
     }
 
     @GetMapping("/findById/{id}")
-    public ResponseEntity<User> findById(@PathVariable long id) {
+    public ResponseEntity<UserEntity> findById(@PathVariable long id) {
         try {
-            User user = this.userService.findById(id);
+            UserEntity user = this.userService.findById(id);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -78,9 +78,9 @@ public class UserController {
     }
 
     @GetMapping("/findByName/{name}")
-    public ResponseEntity<User> findByName(@PathVariable String name) {
+    public ResponseEntity<UserEntity> findByName(@PathVariable String name) {
         try {
-            Optional<User> user = userService.findByName(name);
+            Optional<UserEntity> user = userService.findByName(name);
             if (user.isPresent()) {
                 return new ResponseEntity<>(user.get(), HttpStatus.OK);
             } else {

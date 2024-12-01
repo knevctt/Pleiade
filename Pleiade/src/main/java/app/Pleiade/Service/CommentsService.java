@@ -1,7 +1,7 @@
 package app.Pleiade.Service;
 
 import app.Pleiade.Entity.Comments;
-import app.Pleiade.Entity.User;
+import app.Pleiade.Entity.UserEntity;
 import app.Pleiade.Repository.CommentsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
