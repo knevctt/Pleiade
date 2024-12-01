@@ -12,6 +12,7 @@ import com.google.gson.reflect.TypeToken;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -203,5 +204,10 @@ public class BookController {
         } return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<Book>> getBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+        Page<Book> booksPage = bookService.getBooks(page, size);
+        return new ResponseEntity<>(booksPage, HttpStatus.OK);
+    }
 
 }

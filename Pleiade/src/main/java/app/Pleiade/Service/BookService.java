@@ -8,6 +8,8 @@ import app.Pleiade.Repository.BookRepository;
 import app.Pleiade.Repository.PdfStorageRepository;
 import app.Pleiade.Repository.StorageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,6 +38,10 @@ public class BookService {
     public List<Book> findAll(){
         List<Book> list = this.bookRepository.findAll();
         return list;
+    }
+
+    public Page<Book> getBooks(int page, int size) {
+        return bookRepository.findAll(PageRequest.of(page, size));
     }
 
     public Book findById(long id){
