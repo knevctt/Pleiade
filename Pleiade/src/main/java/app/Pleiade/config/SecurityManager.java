@@ -44,5 +44,4 @@ public class SecurityManager {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado") );
     }
 
-
 }

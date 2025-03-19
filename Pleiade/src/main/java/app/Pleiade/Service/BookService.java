@@ -1,5 +1,6 @@
 package app.Pleiade.Service;
 
+import app.Pleiade.Dto.BookDTO;
 import app.Pleiade.Entity.Book;
 import app.Pleiade.Entity.ImageData;
 import app.Pleiade.Entity.PdfData;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.stream.Collectors;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,9 +37,10 @@ public class BookService {
         return "Book updated sucessfully";
     }
 
-    public List<Book> findAll(){
-        List<Book> list = this.bookRepository.findAll();
-        return list;
+    public List<BookDTO> getAllBooks() {
+        return bookRepository.findAll().stream()
+                .map(book -> new BookDTO(book.getId(), book.getTitle(), book.getAuthor(), book.getImageDatas(), book.getSynopsis(), book.getImageData(), book.getGeneros()))
+                .collect(Collectors.toList());
     }
 
     public Page<Book> getBooks(int page, int size) {

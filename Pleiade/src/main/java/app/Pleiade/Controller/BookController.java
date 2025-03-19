@@ -1,5 +1,6 @@
 package app.Pleiade.Controller;
 
+import app.Pleiade.Dto.BookDTO;
 import app.Pleiade.Entity.Book;
 import app.Pleiade.Entity.ImageData;
 import app.Pleiade.Entity.PdfData;
@@ -109,13 +110,9 @@ public class BookController {
     }
 
     @GetMapping("/findAll")
-    public ResponseEntity<List<Book>> findAll() {
-        try {
-            List<Book> lista = this.bookService.findAll();
-            return new ResponseEntity<>(lista, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<List<BookDTO>> getAllBooks() {
+        List<BookDTO> books = bookService.getAllBooks();
+        return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
     @GetMapping("/findById/{id}")
